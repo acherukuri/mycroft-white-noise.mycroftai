@@ -19,6 +19,7 @@ from adapt.intent import IntentBuilder
 
 from mycroft.skills.core import MycroftSkill
 from mycroft.util.log import getLogger
+from mycroft import intent_handler
 
 LOGGER = getLogger(__name__)
 
@@ -26,12 +27,8 @@ class WhiteNoiseSkill(MycroftSkill):
     def __init__(self):
         super(WhiteNoiseSkill, self).__init__(name="WhiteNoiseSkill")
 
-    def initialize(self):
-        white_noise_intent = IntentBuilder("WhiteNoiseIntent"). \
-            require("WhiteNoiseKeyword").build()
-        self.register_intent(white_noise_intent,
-                             self.handle_white_noise_intent)
-
+    @intent_handler(IntentBuilder("WhiteNoiseIntent")
+                    .require("WhiteNoiseKeyword"))
     def handle_white_noise_intent(self, message):
         self.speak_dialog("white.noise")
 
