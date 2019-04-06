@@ -14,7 +14,7 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with Mycroft Core.  If not, see <http://www.gnu.org/licenses/>.
-
+import time
 from adapt.intent import IntentBuilder
 from os.path import dirname, join
 from mycroft.skills.core import MycroftSkill
@@ -38,7 +38,14 @@ class WhiteNoiseSkill(MycroftSkill):
     @intent_handler(IntentBuilder("WhiteNoiseIntent")
                     .require("PlayWhiteNoiseKeyword"))
     def handle_white_noise_intent(self, message):
-        self.audio_service.play(self.play_list[0])
+        self.audio_service.play(self.play_list[0],
+                                message.data['utterance'],
+                                True)
+        boom = 5
+        while boom > 0:
+            time.sleep(1)
+            boom -=1
+        self.audio_service.stop()
 
     @intent_handler(IntentBuilder("WhiteNoiseStopIntent")
                     .require("StopWhiteNoiseKeyword"))
@@ -47,12 +54,19 @@ class WhiteNoiseSkill(MycroftSkill):
 
     @intent_handler(IntentBuilder("WhiteNoiseWavesIntent")
                     .require("PlayWhiteNoiseWavesKeyword"))
-    def handle_white_noise_intent(self, message):
-        self.audio_service.play(self.play_list[1])
+    def handle_white_noise_waves_intent(self, message):
+        self.audio_service.play(self.play_list[1],
+                                message.data['utterance'],
+                                True)
+        boom = 10
+        while boom > 0:
+            time.sleep(1)
+            boom -=1
+        self.audio_service.stop()
 
     @intent_handler(IntentBuilder("WhiteNoiseWavesStopIntent")
                     .require("StopWhiteNoiseWavesKeyword"))
-    def stop_white_noise_intent(self, message):
+    def stop_white_noise_waves_intent(self, message):
         self.audio_service.stop()
 
     def stop(self):
