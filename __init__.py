@@ -29,15 +29,31 @@ class WhiteNoiseSkill(MycroftSkill):
         super(WhiteNoiseSkill, self).__init__(name="WhiteNoiseSkill")
         self.play_list = {
             0: join(dirname(__file__), "whitenoise.mp3"),
+            1: join(dirname(__file__), "waves.mp3"),
         }
 
     def initialize(self):
         self.audio_service = AudioService(self.bus)
 
     @intent_handler(IntentBuilder("WhiteNoiseIntent")
-                    .require("WhiteNoiseKeyword"))
+                    .require("PlayWhiteNoiseKeyword"))
     def handle_white_noise_intent(self, message):
         self.audio_service.play(self.play_list[0])
+
+    @intent_handler(IntentBuilder("WhiteNoiseStopIntent")
+                    .require("StopWhiteNoiseKeyword"))
+    def stop_white_noise_intent(self, message):
+        self.audio_service.stop()
+
+    @intent_handler(IntentBuilder("WhiteNoiseWavesIntent")
+                    .require("PlayWhiteNoiseWavesKeyword"))
+    def handle_white_noise_intent(self, message):
+        self.audio_service.play(self.play_list[1])
+
+    @intent_handler(IntentBuilder("WhiteNoiseWavesStopIntent")
+                    .require("StopWhiteNoiseWavesKeyword"))
+    def stop_white_noise_intent(self, message):
+        self.audio_service.stop()
 
     def stop(self):
         pass
