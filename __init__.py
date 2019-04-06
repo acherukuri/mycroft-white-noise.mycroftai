@@ -30,6 +30,8 @@ class WhiteNoiseSkill(MycroftSkill):
         self.play_list = {
             0: join(dirname(__file__), "whitenoise.mp3"),
             1: join(dirname(__file__), "waves.mp3"),
+            2: join(dirname(__file__), "rain.mp3"),
+            3: join(dirname(__file__), "wind.mp3"),
         }
 
     def initialize(self):
@@ -41,7 +43,7 @@ class WhiteNoiseSkill(MycroftSkill):
         self.audio_service.play(self.play_list[0],
                                 message.data['utterance'],
                                 True)
-        boom = 15
+        boom = 5
         while boom > 0:
             time.sleep(1)
             boom -=1
@@ -58,7 +60,7 @@ class WhiteNoiseSkill(MycroftSkill):
         self.audio_service.play(self.play_list[1],
                                 message.data['utterance'],
                                 True)
-        boom = 40
+        boom = 5
         while boom > 0:
             time.sleep(1)
             boom -=1
@@ -69,6 +71,22 @@ class WhiteNoiseSkill(MycroftSkill):
     def stop_white_noise_waves_intent(self, message):
         self.stop_audio_service()
 
+    @intent_handler(IntentBuilder("WhiteNoiseRainIntent")
+                    .require("PlayWhiteNoiseRainKeyword"))
+    def handle_white_noise_rain_intent(self, message):
+        self.audio_service.play(self.play_list[2],
+                                message.data['utterance'],
+                                True)
+        boom = 5
+        while boom > 0:
+            time.sleep(1)
+            boom -=1
+        self.stop_audio_service()
+
+    @intent_handler(IntentBuilder("WhiteNoiseRainStopIntent")
+                    .require("StopWhiteNoiseRainKeyword"))
+    def stop_white_noise_rain_intent(self, message):
+        self.stop_audio_service()
 
     def stop_audio_service(self):
         self.audio_service.stop()
