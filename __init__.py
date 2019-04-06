@@ -41,16 +41,16 @@ class WhiteNoiseSkill(MycroftSkill):
         self.audio_service.play(self.play_list[0],
                                 message.data['utterance'],
                                 True)
-        boom = 5
+        boom = 15
         while boom > 0:
             time.sleep(1)
             boom -=1
-        self.audio_service.stop()
+        self.stop_audio_service()
 
     @intent_handler(IntentBuilder("WhiteNoiseStopIntent")
                     .require("StopWhiteNoiseKeyword"))
     def stop_white_noise_intent(self, message):
-        self.audio_service.stop()
+        self.stop_audio_service()
 
     @intent_handler(IntentBuilder("WhiteNoiseWavesIntent")
                     .require("PlayWhiteNoiseWavesKeyword"))
@@ -58,15 +58,19 @@ class WhiteNoiseSkill(MycroftSkill):
         self.audio_service.play(self.play_list[1],
                                 message.data['utterance'],
                                 True)
-        boom = 10
+        boom = 40
         while boom > 0:
             time.sleep(1)
             boom -=1
-        self.audio_service.stop()
+        self.stop_audio_service()
 
     @intent_handler(IntentBuilder("WhiteNoiseWavesStopIntent")
                     .require("StopWhiteNoiseWavesKeyword"))
     def stop_white_noise_waves_intent(self, message):
+        self.stop_audio_service()
+
+
+    def stop_audio_service(self):
         self.audio_service.stop()
 
     def stop(self):
