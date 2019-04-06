@@ -55,7 +55,8 @@ class WhiteNoiseSkill(MycroftSkill):
         self.stop_audio_service()
 
     @intent_handler(IntentBuilder("WhiteNoiseWavesIntent")
-                    .require("PlayWhiteNoiseWavesKeyword"))
+                    .require("PlayWhiteNoiseKeyword")
+                    .require("Waves"))
     def handle_white_noise_waves_intent(self, message):
         self.audio_service.play(self.play_list[1],
                                 message.data['utterance'],
@@ -67,7 +68,8 @@ class WhiteNoiseSkill(MycroftSkill):
         self.stop_audio_service()
 
     @intent_handler(IntentBuilder("WhiteNoiseWavesStopIntent")
-                    .require("StopWhiteNoiseWavesKeyword"))
+                    .require("StopWhiteNoiseKeyword")
+                    .require("Waves"))
     def stop_white_noise_waves_intent(self, message):
         self.stop_audio_service()
 
