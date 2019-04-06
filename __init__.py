@@ -74,7 +74,8 @@ class WhiteNoiseSkill(MycroftSkill):
         self.stop_audio_service()
 
     @intent_handler(IntentBuilder("WhiteNoiseRainIntent")
-                    .require("PlayWhiteNoiseRainKeyword"))
+                    .require("PlayWhiteNoiseKeyword")
+                    .require("Rain"))
     def handle_white_noise_rain_intent(self, message):
         self.audio_service.play(self.play_list[2],
                                 message.data['utterance'],
@@ -86,12 +87,14 @@ class WhiteNoiseSkill(MycroftSkill):
         self.stop_audio_service()
 
     @intent_handler(IntentBuilder("WhiteNoiseRainStopIntent")
-                    .require("StopWhiteNoiseRainKeyword"))
+                    .require("StopWhiteNoiseKeyword")
+                    .require("Rain"))
     def stop_white_noise_rain_intent(self, message):
         self.stop_audio_service()
 
     @intent_handler(IntentBuilder("WhiteNoiseWindIntent")
-                    .require("PlayWhiteNoiseWindKeyword"))
+                    .require("PlayWhiteNoiseKeyword")
+                    .require("Wind"))
     def handle_white_noise_wind_intent(self, message):
         self.audio_service.play(self.play_list[3],
                                 message.data['utterance'],
@@ -103,7 +106,8 @@ class WhiteNoiseSkill(MycroftSkill):
         self.stop_audio_service()
 
     @intent_handler(IntentBuilder("WhiteNoiseWindStopIntent")
-                    .require("StopWhiteNoiseWindKeyword"))
+                    .require("StopWhiteNoiseKeyword")
+                    .require("Wind"))
     def stop_white_noise_wind_intent(self, message):
         self.stop_audio_service()
 
