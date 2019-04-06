@@ -16,21 +16,28 @@
 # along with Mycroft Core.  If not, see <http://www.gnu.org/licenses/>.
 
 from adapt.intent import IntentBuilder
-
+from os.path import dirname, join
 from mycroft.skills.core import MycroftSkill
 from mycroft.util.log import getLogger
 from mycroft import intent_handler
+from mycroft.skills.audioservice import AudioService
 
 LOGGER = getLogger(__name__)
 
 class WhiteNoiseSkill(MycroftSkill):
     def __init__(self):
         super(WhiteNoiseSkill, self).__init__(name="WhiteNoiseSkill")
+        self.play_list = {
+            0: join(dirname(__file__), "whitenoise.mp3"),
+        }
+
+    def initialize(self):
+        self.audio_service = AudioService(self.bus)
 
     @intent_handler(IntentBuilder("WhiteNoiseIntent")
                     .require("WhiteNoiseKeyword"))
     def handle_white_noise_intent(self, message):
-        self.speak_dialog("white.noise")
+        self.audio_service.play(self.play_list[0])
 
     def stop(self):
         pass
