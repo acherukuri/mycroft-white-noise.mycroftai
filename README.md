@@ -13,6 +13,14 @@ Built a voice assistant for the kitchen of tomorrow using Mycroft AI which answe
 # Installation: 
 Follow this for the setup https://mycroft.ai/documentation/skills/introduction-developing-skills/
 
+# Steps:
+### Used Base Mycroft skill to build White NOise Skill
+###  Create 4 padatious intents
+### Two padatious intents for playing white noise by itself and playing white noise waves rain or wind
+### Other two for stopping white noise by itself and Stopping white noise waves, wind or rain.
+### Uploaded mp3 sounds to pkay these sounds
+### Used audio service class to play sound tracks.
+
 # References : 
 https://github.com/MycroftAI/mycroft-skills
 
