@@ -15,107 +15,42 @@
 # You should have received a copy of the GNU General Public License
 # along with Mycroft Core.  If not, see <http://www.gnu.org/licenses/>.
 import time
-from adapt.intent import IntentBuilder
 from os.path import dirname, join
-from mycroft.skills.core import MycroftSkill
 from mycroft.util.log import getLogger
-from mycroft import intent_handler
-from mycroft.skills.audioservice import AudioService
+from mycroft.skills.common_play_skill import CommonPlaySkill, CPSMatchLevel
+from mycroft.util.parse import match_one, extract_duration
 
 LOGGER = getLogger(__name__)
 
-class WhiteNoiseSkill(MycroftSkill):
-    def __init__(self):
-        super(WhiteNoiseSkill, self).__init__(name="WhiteNoiseSkill")
-        self.play_list = {
-            0: join(dirname(__file__), "whitenoise.mp3"),
-            1: join(dirname(__file__), "waves.mp3"),
-            2: join(dirname(__file__), "rain.mp3"),
-            3: join(dirname(__file__), "wind.mp3"),
-        }
+track_list = {
+    'white noise for': join(dirname(__file__), "whitenoise.mp3"),
+    'white noise waves for': join(dirname(__file__), "waves.mp3"),
+    'white noise rain for': join(dirname(__file__), "rain.mp3"),
+    'white noise wind for': join(dirname(__file__), "wind.mp3"),
+}
 
-    def initialize(self):
-        self.audio_service = AudioService(self.bus)
+class WhiteNoiseSkill(CommonPlaySkill):
+    def CPS_match_query_phrase(self, phrase):
+        match, confidence = match_one(phrase, track_list)
+        if confidence > 0.5:
+            return (match, CPSMatchLevel.TITLE, {"track": match})
+        else:
+            return None
 
-    @intent_handler(IntentBuilder("WhiteNoiseIntent")
-                    .require("PlayWhiteNoiseKeyword"))
-    def handle_white_noise_intent(self, message):
-        self.audio_service.play(self.play_list[0],
-                                message.data['utterance'],
-                                True)
-        boom = 5
-        while boom > 0:
+    def CPS_start(self, phrase, data):
+        url = data['track']
+        try:
+            track_duration = int(extract_duration(phrase)[0].total_seconds())
+        except AttributeError:
+            return None
+        self.log.info('track_duration is: ' + str(track_duration))
+        self.log.info('track name is: ' + url)
+        self.audioservice.play(url, phrase, True)
+        while track_duration > 0:
             time.sleep(1)
-            boom -=1
-        self.stop_audio_service()
+            track_duration -=1
+        self.audioservice.stop()
 
-    @intent_handler(IntentBuilder("WhiteNoiseStopIntent")
-                    .require("StopWhiteNoiseKeyword"))
-    def stop_white_noise_intent(self, message):
-        self.stop_audio_service()
-
-    @intent_handler(IntentBuilder("WhiteNoiseWavesIntent")
-                    .require("PlayWhiteNoiseKeyword")
-                    .require("Waves"))
-    def handle_white_noise_waves_intent(self, message):
-        self.audio_service.play(self.play_list[1],
-                                message.data['utterance'],
-                                True)
-        boom = 5
-        while boom > 0:
-            time.sleep(1)
-            boom -=1
-        self.stop_audio_service()
-
-    @intent_handler(IntentBuilder("WhiteNoiseWavesStopIntent")
-                    .require("StopWhiteNoiseKeyword")
-                    .require("Waves"))
-    def stop_white_noise_waves_intent(self, message):
-        self.stop_audio_service()
-
-    @intent_handler(IntentBuilder("WhiteNoiseRainIntent")
-                    .require("PlayWhiteNoiseKeyword")
-                    .require("Rain"))
-    def handle_white_noise_rain_intent(self, message):
-        self.audio_service.play(self.play_list[2],
-                                message.data['utterance'],
-                                True)
-        boom = 5
-        while boom > 0:
-            time.sleep(1)
-            boom -=1
-        self.stop_audio_service()
-
-    @intent_handler(IntentBuilder("WhiteNoiseRainStopIntent")
-                    .require("StopWhiteNoiseKeyword")
-                    .require("Rain"))
-    def stop_white_noise_rain_intent(self, message):
-        self.stop_audio_service()
-
-    @intent_handler(IntentBuilder("WhiteNoiseWindIntent")
-                    .require("PlayWhiteNoiseKeyword")
-                    .require("Wind"))
-    def handle_white_noise_wind_intent(self, message):
-        self.audio_service.play(self.play_list[3],
-                                message.data['utterance'],
-                                True)
-        boom = 5
-        while boom > 0:
-            time.sleep(1)
-            boom -=1
-        self.stop_audio_service()
-
-    @intent_handler(IntentBuilder("WhiteNoiseWindStopIntent")
-                    .require("StopWhiteNoiseKeyword")
-                    .require("Wind"))
-    def stop_white_noise_wind_intent(self, message):
-        self.stop_audio_service()
-
-    def stop_audio_service(self):
-        self.audio_service.stop()
-
-    def stop(self):
-        pass
 
 def create_skill():
     return WhiteNoiseSkill()
