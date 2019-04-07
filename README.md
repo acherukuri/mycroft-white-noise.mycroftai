@@ -20,6 +20,7 @@ Follow this for the setup https://mycroft.ai/documentation/skills/introduction-d
 ### Other two for stopping white noise by itself and Stopping white noise waves, wind or rain.
 ### Uploaded mp3 sounds to pkay these sounds
 ### Used audio service class to play sound tracks.
+### Integrated the skill with the Mycroft Mark-1 device in real time
 
 # References : 
 https://github.com/MycroftAI/mycroft-skills
