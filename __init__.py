@@ -49,9 +49,19 @@ class WhiteNoiseSkill(MycroftSkill):
     def handle_file_white_noice_intent(self, message):
         self.handle_white_noise_intent(message)
 
+    @intent_file_handler("stop.white.noice.intent")
+    def handle_stop_white_noice_intent(self, message):
+        self.enclosure.mouth_reset()
+        self.audio_service.stop()
+
     @intent_file_handler("waves.rain.wind.intent")
     def handle_file_rain_waves_wind_intent(self, message):
         self.handle_rain_waves_wind_intent(message)
+
+    @intent_file_handler("stop.waves.rain.wind.intent")
+    def handle_stop_rain_waves_wind_intent(self, message):
+        self.enclosure.mouth_reset()
+        self.audio_service.stop()
 
     def handle_rain_waves_wind_intent(self, message):
         utterance = message.data.get('utterance', "")
