@@ -15,7 +15,6 @@
 # You should have received a copy of the GNU General Public License
 # along with Mycroft Core.  If not, see <http://www.gnu.org/licenses/>.
 import time
-from adapt.intent import IntentBuilder
 from os.path import dirname, join
 from mycroft.skills.core import MycroftSkill
 from mycroft.util.log import getLogger
@@ -29,10 +28,9 @@ class WhiteNoiseSkill(MycroftSkill):
     def __init__(self):
         super(WhiteNoiseSkill, self).__init__(name="WhiteNoiseSkill")
         self.play_list = {
-            0: join(dirname(__file__), "whitenoise.mp3"),
-            'white noise waves for': join(dirname(__file__), "waves.mp3"),
-            'white noise rain for': join(dirname(__file__), "rain.mp3"),
-            'white noise wind for': join(dirname(__file__), "wind.mp3"),
+            'waves': join(dirname(__file__), "waves.mp3"),
+            'rain': join(dirname(__file__), "rain.mp3"),
+            'wind': join(dirname(__file__), "wind.mp3"),
         }
 
     def initialize(self):
@@ -44,20 +42,37 @@ class WhiteNoiseSkill(MycroftSkill):
             track_duration = int(extract_duration(utterance)[0].total_seconds())
         except AttributeError:
             return None
+        self.play_track(join(dirname(__file__), "whitenoise.mp3"),
+                        track_duration, utterance)
+
+    @intent_file_handler("white.noice.intent")
+    def handle_file_white_noice_intent(self, message):
+        self.handle_white_noise_intent(message)
+
+    @intent_file_handler("waves.rain.wind.intent")
+    def handle_file_rain_waves_wind_intent(self, message):
+        self.handle_rain_waves_wind_intent(message)
+
+    def handle_rain_waves_wind_intent(self, message):
+        utterance = message.data.get('utterance', "")
+        match, confidence = match_one(utterance, self.play_list)
+        try:
+            track_duration = int(extract_duration(utterance)[0].total_seconds())
+        except AttributeError:
+            return None
+        self.play_track(match, track_duration, utterance)
+
+    def play_track(self, track_name, track_duration, utterance):
         if(track_duration > 0):
             self.log.info('track_duration is: ' + str(track_duration))
-            self.audio_service.play(join(dirname(__file__), "whitenoise.mp3"),
-                                    utterance, True)
+            self.log.info('track url is: ' + track_name)
+            self.audio_service.play(track_name, utterance, True)
             while track_duration > 0:
                 time.sleep(1)
                 track_duration -=1
             self.audio_service.stop()
         else:
             return None
-
-    @intent_file_handler("play.white.noice.intent")
-    def handle_query_time_alt(self, message):
-        self.handle_white_noise_intent(message)
 
     def stop(self):
         pass
