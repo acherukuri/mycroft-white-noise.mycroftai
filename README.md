@@ -30,3 +30,8 @@ https://github.com/acherukuri/mycroft-white-noise.mycroftai
 
 # Youtube link
 https://youtu.be/OMid4knw2GI
+
+Next Gen Kitchen Assitant Link
+---
+
+[Click here to go to the kitchen assistant skill](https://github.com/acherukuri/mycroft-kitchen.mycroftai)
